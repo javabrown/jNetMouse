@@ -9,6 +9,9 @@ class ViewController: UIViewController {
     @IBOutlet var imageView: UIImageView!
     
     //
+    var previousjNetPoint:CGPoint!
+    var lastjNetPoint:CGPoint!
+    
     var lastPoint:CGPoint!
     var isSwiping:Bool!
     var red:CGFloat!
@@ -65,6 +68,7 @@ class ViewController: UIViewController {
             isSwiping    = false
             if let touch = touches.first{
                 lastPoint = touch.locationInView(imageView)
+                previousjNetPoint = lastPoint;
             }
     }
     
@@ -85,7 +89,11 @@ class ViewController: UIViewController {
                 self.imageView.image = UIGraphicsGetImageFromCurrentImageContext()
                 UIGraphicsEndImageContext()
                 
-                sendEvent(lastPoint, currentPoint: currentPoint)
+                //lastPoint
+                if(getDistance(lastPoint, p2: currentPoint) >= 5){
+                   sendEvent(lastPoint, currentPoint: currentPoint)
+                }
+                
                 
                 lastPoint = currentPoint
             }
@@ -107,6 +115,11 @@ class ViewController: UIViewController {
                 UIGraphicsEndImageContext()
             }
         
+            //if let touch = touches.first{
+            //    lastjNetPoint = touch.locationInView(imageView)
+            //    sendEvent(previousjNetPoint, currentPoint: lastjNetPoint)
+            //}
+        
            /*if let touch = touches.first {
               let currentPoint = touch.locationInView(imageView)
               sendEvent(lastPoint, currentPoint: currentPoint)
@@ -114,10 +127,11 @@ class ViewController: UIViewController {
     }
 
 
-    func sendEvent (lastPoint: CGPoint, currentPoint:CGPoint) {
-    
+    func sendEvent(lastPoint: CGPoint, currentPoint:CGPoint){
+       let distance: (Int)  = Int(getDistance(lastPoint, p2: currentPoint))
+        
        let ip: String = self.getIp()
-       let step : Int = 5;
+       let step : Int = distance;
     
        var x:Int = step
     
@@ -131,9 +145,6 @@ class ViewController: UIViewController {
           y = -step
        }
     
-    
-    
-       //let url = "http://192.168.1.7:2013/mousemove?x=\(x)&y=\(y)"
        let url = "http://\(ip):2013/mousemove?x=\(x)&y=\(y)"
         
        Utils.doGet(url)
@@ -143,5 +154,22 @@ class ViewController: UIViewController {
        print("LAST ==>  X=\(lastPoint.x) | Y=\(lastPoint.y) | CURRENT ==>  X=\(currentPoint.x) | Y=\(currentPoint.y) ");
     
     }
+    
+    func getDistance(p1: CGPoint, p2: CGPoint) -> CGFloat {
+        let xDist: CGFloat = (p2.x - p1.x)
+        let yDist: CGFloat = (p2.y - p1.y)
+        //CGPoint yDist = (p2.y - p1.y);
+        //CGPoint distance = sqrt((xDist * xDist) + (yDist * yDist));
+        let distance: CGFloat = sqrt((xDist * xDist) + (yDist * yDist))
+        
+        print("distance ==> \(distance)")
+        
+        return distance;
+    }
+    
+    //func calc(from: CGPoint, to: CGPoint) -> CGFloat {
+    //    return sqrt(CGPoint(from, to: to))
+    //}
 
+   
 }
