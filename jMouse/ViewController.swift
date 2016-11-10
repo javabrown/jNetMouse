@@ -22,9 +22,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        red   = (0.0/255.0)
-        green = (0.0/255.0)
-        blue  = (0.0/255.0)
+        red   = 255 //(0.0/255.0)
+        green = 255 //(0.0/255.0)
+        blue  = 255 //(0.0/255.0)
         
         print(self.getIp());
         
